@@ -1,0 +1,83 @@
+/*
+ * Problem3.c
+ *
+ *  Created on: Sep 2, 2015
+ *      Author: rwedoff
+ *
+ *      Write a program that copies two files. The program should take as arguments (from the command line)
+ *       the names of source and destination files. The files will be located in the current directory.
+ *       The program should produce a warning when the destination file already exists and ask the user if they should proceed with the file copy.
+ */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+void copyFile(char * file2, char * contents);
+void readFile(char * fileName, char * res);
+void checkFile(char * file1, char * file2);
+
+void copyFile(char * file2, char * contents){
+	  FILE * pFile;
+	  pFile = fopen (file2,"w");
+	    fputs (contents,pFile);
+	    fclose (pFile);
+
+}
+
+void readFile(char * fileName, char * res){
+		FILE *pfile;
+	   char buff[1000];
+	   pfile = fopen(fileName, "r");
+	   if(pfile == NULL){
+		   printf("File does not exist\n");
+	   }
+	   else{
+		   fgets(buff, 1000, (FILE*)pfile);
+	   }
+	   strcpy(res, buff);
+}
+
+void checkFile(char * file1, char * file2){
+	if( access( file2, F_OK ) != -1 ) {
+			//File exists
+			printf("File2 exists\n");
+			char prompt_a[5];
+			printf ("Do you wish to overwrite this file at %s (y\\n): ", file2);
+			scanf ("%s", prompt_a);
+			if(prompt_a[0] == 'y'){
+				char * res = malloc(1000);
+				readFile(file1, res);
+				copyFile(file2, res);
+				printf("The file was copied.\n");
+			 }
+			 else{
+
+			 }
+		} else {
+		    // file doesn't exist
+			printf("The file does not exist at %s.  File will be created.", file2);
+			char * res = malloc(1000);
+			readFile(file1, res);
+			copyFile(file2, res);
+			printf("The file was copied.\n");
+		}
+}
+
+//TODO fix the whole problem.  Function: take file one place contents into file 2.
+
+int main(int argc, char *argv[]){
+
+	if(argc != 3){
+		printf("There weren't enough arguments, please follow this format:\n\"File Name - Destination File\"");
+	}
+	else{
+		//char * fName = fullName(argv[1], argv[2]);
+		printf("File 1: %s\n", argv[1]);
+		checkFile(argv[1], argv[2]);
+
+
+	}
+		return 0;
+}
+

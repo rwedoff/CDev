@@ -1,0 +1,31 @@
+/*
+ * Problem1.c
+ *
+ *  Created on: Aug 31, 2015
+ *      Author: rwedoff
+ *
+ *      Problem 1:  Write a program that prints the first 20 Fibonacci Numbers.
+ *      Each number should be printed on a new line.
+ */
+#include <stdio.h>
+void fib(int i);
+void fib(int i){
+	int valMinus1 = 0, valMinus2 = 1, curr = 0, n = 0;
+	while(n<=i){
+		printf("%d\n", curr);
+		curr = valMinus1 + valMinus2;
+
+		valMinus2 = valMinus1;
+		valMinus1 =  curr;
+		n++;
+	}
+}
+
+/*
+int main(){
+	fib(20);
+	return 0;
+}
+*/
+
+

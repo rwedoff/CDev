@@ -1,0 +1,44 @@
+// version 1.2: current version
+// version 1.1: added support for initializing the list
+// version 1.2: clarified the behavior of the add function
+
+typedef struct list_item {
+	char *value;
+	struct list_item *next;
+	struct list_item *prev;
+} list_item_t;
+
+/**
+global variable declaration
+**/
+typedef struct single_list {
+	list_item_t *head;
+	list_item_t *tail;
+} slist_t;
+
+/**
+ initialize the list structure
+ **/
+void init(slist_t *list);
+
+/**
+ add element with value val to a given position in the list
+ calling add with position = 0, will insert the new element as the first element
+ */
+void add(slist_t *list, char *val, int position);
+
+/**
+ print the list
+ */
+void print(slist_t *list);
+
+/**
+empty the list
+**/
+void empty(slist_t *list);
+
+/**
+sort the list
+**/
+void bublesort(slist_t *list);
+

@@ -1,0 +1,28 @@
+/*
+ * Problem2.c
+ *
+ *  Created on: Aug 31, 2015
+ *      Author: rwedoff
+ *
+ *      Problem 2:  Write a program that takes as input an integer N and
+ *      prints all the number that N is divisible by.
+ */
+#include <stdio.h>
+void divisible();
+void divisible(){
+	int input, i;
+	scanf("%d", &input);
+	printf("Numbers %d is divisible by: \n", input);
+	for(i = 1; i<=input; i++){
+		if(input%i == 0){
+			printf("%d\n",i);
+		}
+	}
+}
+
+int main(){
+	divisible();
+	return 0;
+}
+
+

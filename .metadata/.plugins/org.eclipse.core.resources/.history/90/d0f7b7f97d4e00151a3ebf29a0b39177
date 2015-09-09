@@ -1,0 +1,36 @@
+/*
+ * LinkedList.c
+ *
+ *  Created on: Aug 29, 2015
+ *      Author: rwedoff
+ */
+#include <stdio.h>
+#include "LinkedList.h"
+
+
+
+
+
+
+
+void printList(llNode * head){
+    llNode * current = head;
+    while (current != NULL) {
+        printf("%d\n", current->value);
+        current = current->next;
+    }
+}
+
+llNode push(llNode * head, int val){
+    llNode * curr = head;
+    printf("%d\n",curr->value);
+    llNode * newNode = malloc(sizeof(llNode));
+    newNode->value = val;
+    newNode->next = curr;
+    return * newNode;
+}
+
+
+
+
+

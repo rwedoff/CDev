@@ -1,0 +1,244 @@
+/*
+ * Problem4.c
+ *
+ *  Created on: Sep 4, 2015
+ *      Author: rwedoff
+ *
+ *      Implement a double-linked list that stores strings. Your implementation should support the following operations:
+ *•	Initialize the list
+ *•	Add a string to the end of the list
+ *•	Empty the list
+ *•	Print the elements of the list
+ *•	Sort the elements of the list in lexical order using bubble sort.
+ *Your implementation cannot copy elements as part of the implementation of bubble sort. You must use pointer operations to reorder the elements of a list appropriately.
+ *For this problem, make sure to use the function definitions provided in list.h.
+ *
+ */
+
+//TODO Sort the elements of the list in lexical order using bubble sort.
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include "list.h"
+int length(slist_t *list);
+void swap(list_item_t * h, list_item_t * t, slist_t * list);
+list_item_t *swapem(list_item_t *l1, list_item_t * l2);
+
+void init(slist_t *list){
+	list_item_t *head = malloc(sizeof(list_item_t));
+	list_item_t *tail = malloc(sizeof(list_item_t));
+	head->prev = NULL;
+	head->next=tail;
+	tail->prev= head;
+	tail->next= NULL;
+	head->value = "Head";
+	tail->value = "Abs";
+	list->head = head;
+	list->tail = tail;
+
+
+}
+
+void print(slist_t *list){
+	list_item_t * current = list->head;
+	    while (current != NULL) {
+	        printf("%s\n", current->value);
+	        current = current->next;
+	    }
+}
+
+void add(slist_t *list, char *val, int position){
+	list_item_t * currHead = list->head;
+	list_item_t * newItem = malloc(sizeof(list_item_t));
+
+	int i = 0;
+
+	if(position == 0){
+		char * temp = currHead->value;
+		currHead->value = val;
+		(currHead->next)->prev = newItem;
+		newItem->prev=currHead;
+		newItem->next = currHead->next;
+		newItem->value = temp;
+		currHead->next = newItem;
+	}
+	else{
+		while(i < position){
+			if(currHead->next == NULL){
+				printf("The position %d is larger than the end of the list.\nThe element was added to the end of the list\n\n", position);
+				break;
+			}
+			currHead = currHead->next;
+			i++;
+		}
+		if(currHead->next != NULL){
+			(currHead->next) -> prev = newItem;
+		}
+		newItem->prev = currHead;
+		newItem->value = val;
+		newItem->next = currHead->next;
+		currHead->next = newItem;
+	}
+}
+
+/**
+empty the list
+**/
+void empty(slist_t *list){
+	list_item_t * oneBefore = list->head;
+	list_item_t  * temp = oneBefore->next;
+	while(oneBefore != NULL){
+		temp = oneBefore->next;
+		free(oneBefore);
+		oneBefore = temp;
+	}
+	free(temp);
+	free(list->head);
+
+}
+
+void bublesort(slist_t *list){
+	/*bool swapped = false;
+	list_item_t * el1 = list->head;
+	list_item_t * el2 = NULL;
+
+	if(el1 == NULL)
+		return;
+	do{
+		swapped = false;
+		el1 = list->head;
+
+		while(el1->next != el2){
+			if(el1->next == NULL){
+								break;
+			}
+			//printf("EL1->next: %s\n\n", el1->next->value);
+				if(el1->next != NULL){
+					if(strcmp(el1->value, (el1->next)->value) > 0){
+						strcmp Rules:
+						 * a , b = -1
+						 * a , a = 0
+						 * b , a = 1
+
+						swap(el1, el1->next, list);
+						swapped = true;
+					}
+				}
+				el1 = el1->next;
+				printf("CURR LIST: \n");
+				print(list);
+				printf("\n\n");
+
+			}
+			el2 = el1;
+	}while(swapped);*/
+
+	list_item_t *p,*q,*top, *start = list->head;
+	bool swap = true;
+
+
+	if((top = (list_item_t *)malloc(sizeof(list_item_t))) == NULL){
+		printf("Error");
+		exit(1);
+	}
+	top->next = start;
+	if(start != NULL && start->next != NULL){
+		while(swap){
+			swap = false;
+			q = top;
+			p = top -> next;
+			while(p->next != NULL){
+				if(strcmp(p->value, (p->next)->value) > 0){
+					/*strcmp Rules:
+					 * a , b = -1
+					 * a , a = 0
+					 * b , a = 1
+					 */
+					q->next = swapem(p, p->next);
+					swap = true;
+				}
+				q = p;
+				if(p->next != NULL){
+					p = p->next;
+				}
+				printf("CURRLIST: \n\n");
+				print(list);
+			}
+		}
+	}
+
+	p = top->next;
+	free(top);
+
+
+}
+
+list_item_t *swapem(list_item_t *h, list_item_t * t, list){
+	//printf("Current Head: %s\n", list->head->value);
+		if(h->prev != NULL)
+			h->prev->next = t;
+		if(t->next != NULL)
+			t->next->prev = h;
+		if(h == list->head){
+			//printf("HEAD: %s\n\n", h->value);
+			list->head = t;
+		}
+		if(h == list->tail){
+			list->tail = t;
+		}
+		t->prev = h->prev;
+		h->prev = t;
+		h->next = t->next;
+		t->next = h;
+}
+
+void swap(list_item_t * h, list_item_t * t, slist_t * list){
+	//printf("Current Head: %s\n", list->head->value);
+	if(h->prev != NULL)
+		h->prev->next = t;
+	if(t->next != NULL)
+		t->next->prev = h;
+	if(h == list->head){
+		//printf("HEAD: %s\n\n", h->value);
+		list->head = t;
+	}
+	if(h == list->tail){
+		list->tail = t;
+	}
+	t->prev = h->prev;
+	h->prev = t;
+	h->next = t->next;
+	t->next = h;
+
+}
+
+int length(slist_t * list){
+	list_item_t * h = list->head;
+	int i =0;
+	while(h != NULL){
+		h = h->next;
+		i++;
+	}
+	printf("Length: %d\n\n", i);
+	return i;
+}
+
+int main(){
+	slist_t * list = malloc(sizeof(slist_t));
+	init(list);
+	add(list, "Zephyr", 0);
+	add(list,"Bombs", 1);
+	add(list,"Alpha", 2);
+	add(list, "Cars", 3);
+	add(list, "Hogs", 4);
+	add(list, "Farts", 5);
+	print(list);
+	//empty(list);
+	bublesort(list);
+	printf("\n\n\n");
+	print(list);
+	return 0;
+}

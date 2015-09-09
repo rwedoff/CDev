@@ -1,0 +1,114 @@
+/*
+ * Problem3.c
+ *
+ *  Created on: Sep 2, 2015
+ *      Author: rwedoff
+ *
+ *      Write a program that copies two files. The program should take as arguments (from the command line)
+ *       the names of source and destination files. The files will be located in the current directory.
+ *       The program should produce a warning when the destination file already exists and ask the user if they should proceed with the file copy.
+ */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+void copyFile(char * fullName, char * contents);
+void readFile(char * fileName, char * res);
+char * fullName(char * fileName, char * destination);
+void checkFile(char * fName, char * original);
+
+char * fullName(char * fileName, char * destination){
+		int len = 2 + strlen(fileName)+ strlen(destination);
+		char * full = (char *) malloc(len);
+		strcpy(full, destination);
+		strcat(full, "/");
+		strcat(full, fileName);
+		//printf("%s\n", full);
+		return full;
+}
+
+void copyFile(char * fullName, char * contents){
+
+	  char * copyName =  (char *) malloc(strlen(fullName) + 6);
+	  char keys[] = ".";
+	  int i;
+	  i = strcspn (fullName,keys);
+	  char fileExtension[i];
+	  char fullNameMinus[i];
+	  memcpy(fileExtension, &fullName[i], i+1 );
+	  memcpy(fullNameMinus, fullName, i+1 );
+	  fileExtension[i] = '\0';
+	  fullNameMinus[i] = '\0';
+	  printf("SUBBUFF: %s\n", contents);
+
+	  strcpy(copyName, fullNameMinus);
+	  strcat(copyName, "-copy");
+	  strcat(copyName, fileExtension);
+	  FILE * pFile;
+	  pFile = fopen (copyName,"w");
+
+	    fputs (contents,pFile);
+	    fclose (pFile);
+
+	  free(copyName);
+}
+
+void readFile(char * fileName, char * res){
+		FILE *pfile;
+	   char buff[1000];
+	   pfile = fopen(fileName, "r");
+	   if(pfile == NULL){
+		   printf("File does not exist\n");
+	   }
+	   else{
+		   fgets(buff, 1000, (FILE*)pfile);
+		   printf("File Contents: %s\n", buff );
+	   }
+	   strcpy(res, buff);
+	   printf("res: %s,\n\n", buff);
+}
+
+void checkFile(char * fName, char * original){
+	if( access( original, F_OK ) != -1 ) {
+			//File exists
+			printf("This file exists\n\n");
+			char prompt_a[5];
+			printf ("Do you wish to copy this file at %s (y\\n): ", fName);
+			scanf ("%s", prompt_a);
+			printf ("You entered: %s\n", prompt_a);
+			if(prompt_a[0] == 'y'){
+				char * res = malloc(1000);
+				readFile(original, res);
+				copyFile(fName, res);
+				printf("The file was copied.\n");
+			 }
+			 else{
+				  printf("\n");
+			 }
+
+		} else {
+		    // file doesn't exist
+			printf("The file does not exist at %s\n", fName);
+		}
+}
+
+
+//TODO it has to do with the -copy, or the passing of the contents.
+//TODO don't have to call full name that early in the program, fix this
+int main(int argc, char *argv[]){
+
+	if(argc != 5){
+		printf("There weren't enough arguments, please follow this format:\n\"File Name - Destination - File Name - Destination\"");
+	}
+	else{
+		char * fName = fullName(argv[1], argv[2]);
+		char * fName2 = fullName(argv[3], argv[4]);
+		printf("File 1: %s\n", argv[1]);
+		checkFile(fName, argv[2]);
+		printf("File 2: %s\n", argv[3]);
+		checkFile(fName2, argv[4]);
+
+	}
+		return 0;
+}

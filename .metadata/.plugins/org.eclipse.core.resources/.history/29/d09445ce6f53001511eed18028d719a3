@@ -1,0 +1,29 @@
+/*
+ * Problem4.c
+ *
+ *  Created on: Sep 4, 2015
+ *      Author: rwedoff
+ *
+ *      Implement a double-linked list that stores strings. Your implementation should support the following operations:
+•	Initialize the list
+•	Add a string to the end of the list
+•	Empty the list
+•	Print the elements of the list
+•	Sort the elements of the list in lexical order using bubble sort.
+Your implementation cannot copy elements as part of the implementation of bubble sort. You must use pointer operations to reorder the elements of a list appropriately.
+For this problem, make sure to use the function definitions provided in list.h.
+ *
+ */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "list.h"
+
+
+void init(slist_t *list){
+	list_item_t *head = malloc(sizeof(list_item_t));
+	list_item_t *tail = malloc(sizeof(list_item_t));
+
+
+}
+

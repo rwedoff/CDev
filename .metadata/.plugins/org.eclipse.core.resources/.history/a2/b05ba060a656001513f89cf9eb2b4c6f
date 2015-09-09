@@ -1,0 +1,271 @@
+/*
+ * sets.c
+ *
+ *  Created on: Sep 7, 2015
+ *      Author: rwedoff
+ */
+//
+// OS homework 1
+// V:1.2
+//
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <sys/time.h>
+
+//toggle USE_ARRAYS define to include the desired version of the set implementation
+#define USE_ARRAYS
+
+#ifdef USE_ARRAYS
+typedef struct {
+	int *elements;
+	int num_elem;
+} set_t;
+#else
+typedef struct set_elem {
+	int elem;
+	struct set_elem *next;
+} set_elem_t;
+
+typedef struct {
+	set_elem_t *head;
+	set_elem_t *tail;
+} set_t;
+#endif
+
+void printSet(set_t *a);
+
+
+
+// creates an empty set whose elements are in [0,N]
+void set_init(set_t *a, int N) {
+#ifdef USE_ARRAYS
+	a->elements = (int *)malloc(N * sizeof(int));
+	a->num_elem = N;
+	for(int i = 0; i<N; i++){
+		a->elements[i] = 0;
+	}
+#else
+	int i = 0;
+	set_elem_t * head = malloc(sizeof(set_elem_t));
+	set_elem_t * tail = malloc(sizeof(set_elem_t));
+	a->head = head;
+	a->tail = tail;
+	set_elem_t * curr = a->head;
+	head->elem = 0;
+	head->next = tail;
+
+	while(i < N){
+		set_elem_t * newElem = malloc(sizeof(set_elem_t));
+		newElem->elem = 0;
+		curr->next = newElem;
+		curr = curr->next;
+		i++;
+	}
+		a->tail = NULL;
+		curr->next = a->tail;
+
+#endif
+
+}
+
+// adds an element to the set
+void set_add_elem(set_t *a, int e) {
+	#ifdef USE_ARRAYS
+		a->elements[e] = 1;
+	#else
+		int i = 0;
+		set_elem_t * curr = a->head;
+		while(i < e){
+			curr = curr->next;
+			i++;
+		}
+		curr->elem = 1;
+	#endif
+}
+
+// computes the union of a and b in r
+void set_union(set_t *a, set_t *b, set_t *r) {
+	#ifdef USE_ARRAYS
+	for(int i = 0; i<a->num_elem; i++){
+		if(a->elements[i] || b->elements[i])
+			r->elements[i] = 1;
+	}
+	#else
+	set_elem_t * acurr = a->head;
+	set_elem_t * bcurr = b->head;
+	set_elem_t * rcurr = r->head;
+
+	while(acurr != NULL){
+		if(acurr->elem || bcurr->elem){
+			rcurr->elem = 1;
+		}
+		acurr = acurr->next;
+		bcurr = bcurr->next;
+		rcurr = rcurr->next;
+	}
+	#endif
+
+}
+// computes the intersection of a and b in r
+void set_intersection(set_t *a, set_t *b, set_t *r) {
+	#ifdef USE_ARRAYS
+	for(int i = 0; i<a->num_elem; i++){
+			if(a->elements[i] && b->elements[i])
+				r->elements[i] = 1;
+		}
+	#else
+	set_elem_t * acurr = a->head;
+	set_elem_t * bcurr = b->head;
+	set_elem_t * rcurr = r->head;
+
+	while(acurr != NULL){
+		if(acurr->elem && bcurr->elem){
+			rcurr->elem = 1;
+		}
+		acurr = acurr->next;
+		bcurr = bcurr->next;
+		rcurr = rcurr->next;
+	}
+	#endif
+}
+// checks if the element is part of the set
+int set_has_elem(set_t *a, int elem) {
+	#ifdef USE_ARRAYS
+	if(a->elements[elem] == 1){
+		return 1;
+	} else{
+		return 0;
+	}
+
+	#else
+	set_elem_t * acurr = a->head;
+	int i = 0;
+	while(i != elem){
+		acurr = acurr->next;
+		i++;
+	}
+	if(acurr->elem == 1) {
+		return 1;
+	}
+	else {
+		return 0;
+	}
+	#endif
+
+}
+
+void printSet(set_t *a){
+
+	#ifdef USE_ARRAYS
+	for(int i = 0; i<a->num_elem; i++){
+			printf("#: %d Value: %d\n", i, a->elements[i]);
+		}
+
+	#else
+		set_elem_t * current = a->head;
+		int i = 0;
+	    while (current != NULL) {
+	        printf("#: %d Value: %d\n", i, current->elem);
+	        current = current->next;
+	        i++;
+	    }
+	#endif
+}
+
+
+
+int main() {
+	int N = 1000;
+	set_t a, b, c, r;
+
+	
+
+/*
+	set_init(&a, N);
+	set_init(&r, N);
+	set_init(&c, N);
+
+	set_add_elem(&a, 1);
+	set_add_elem(&a, 2);
+	set_add_elem(&a, 3);
+	set_add_elem(&a, 4);
+	set_add_elem(&a, 5);
+	set_add_elem(&a, 6);
+
+	set_init(&b, N);
+	set_add_elem(&b, 7);
+	set_add_elem(&b, 8);
+	set_add_elem(&b, 9);
+	set_add_elem(&b, 1);
+	set_add_elem(&b, 2);
+	set_add_elem(&b, 3);
+
+	printf("A Set: \n\n");
+	printSet(&a);
+	printf("B Set: \n\n");
+	printSet(&b);
+
+	set_intersection(&a, &b, &r);
+	printf("Union Set: \n");
+	printSet(&r);
+
+	if(set_has_elem(&r,4)){
+		printf("Yes");
+	}
+	else{
+		printf("No");
+	}
+*/
+
+
+	for (N = 100; N < 1000000; N += 2000) {
+		int milli = 0;
+
+		// add code to start timing
+		struct timeval t1, t2;
+	    double elapsedTime;
+
+	    // start timer
+	    gettimeofday(&t1, NULL);
+
+		set_init(&a, N);
+		set_init(&b, N);
+		set_init(&c, N)	;
+		set_init(&r, N)	;
+
+		for (int i = 0; i < N; i++) if ((i % 2) == 0) set_add_elem(&a, i);
+		for (int i = 0; i < N; i++) if ((i % 2) == 1) set_add_elem(&b, i);
+
+
+		set_union(&a, &b, &a);
+		set_intersection(&b, &c, &b);
+		for (int i = 0; i < N; i++) if ((i % 2) == 0) set_add_elem(&b, i);
+		for (int i = 0; i < N; i++) if ((i % 4) == 0) set_add_elem(&c, i);
+		set_intersection(&a, &b, &r);
+		set_intersection(&r, &c, &r);
+
+		// add code to stop timing and compute the run-time in milliseconds
+		
+		    // stop timer
+		    gettimeofday(&t2, NULL);
+
+		    // compute and print the elapsed time in millisec
+		    elapsedTime = (t2.tv_sec - t1.tv_sec) * 1000.0;      // sec to ms
+		    elapsedTime += (t2.tv_usec - t1.tv_usec) / 1000.0;   // us to ms
+		milli = (int) elapsedTime;
+
+		// in variable milli
+		//
+		printf("N %d time %d\n", N, milli);
+
+	}
+
+
+
+	return 0;
+}
+
+
+
+
